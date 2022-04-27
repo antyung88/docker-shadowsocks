@@ -26,7 +26,7 @@ sudo nano docker-compose.yml
 version: "3.3"
 services:
   shadowsocks:
-    image: shadowsocks/shadowsocks-libev
+    image: ghcr.io/antyung88/shadowsocks:main
     restart: always
     ports:
       - 8388:8388/tcp
