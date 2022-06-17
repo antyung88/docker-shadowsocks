@@ -1,0 +1,58 @@
+name: Test Github Packages
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo 
+        uses: actions/checkout@v3
+      - name: Login to Github Packages
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.USER }}
+          password: ${{ secrets.GH_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@97c170d70b5f8bfc77e6b23e68381f217cb64ded
+        with:
+          images: ghcr.io/${{ secrets.USER }}/${{ secrets.IMAGE }}
+      - run: |
+          docker build . -t ghcr.io/${{ secrets.USER }}/${{ secrets.IMAGE }}:test
+          docker save ghcr.io/${{ secrets.USER }}/${{ secrets.IMAGE }}:test > ./docker-image.tar
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-image
+          path: ./docker-image.tar
+          retention-days: 1
+
+  test:
+    name: Test Image
+    runs-on: ubuntu-20.04
+    needs: [build]
+    steps:
+      - name: Download built docker image
+        uses: actions/download-artifact@v3
+        with:
+          name: docker-image
+          path: .artifact
+      - name: Prepare image to run
+        working-directory: .artifact
+        run: docker load < docker-image.tar
+      - name: Check Out Repo 
+        uses: actions/checkout@v3
+      - name: Try to run (github.com)
+        run: docker-compose -f ./.github/docker-compose-test.yml up -d
+      - name: Install curl
+        run: |
+          sudo apt install curl -y
+      - name: Should exit with code 1
+        run: |
+          sleep 5
+          docker logs shadowsocks_test 2>&1 | grep "listening"
