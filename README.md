@@ -1,4 +1,4 @@
-# docker-shadowsocks
+# docker-shadowsocks [![Release Github Packages](https://github.com/antyung88/docker-shadowsocks/actions/workflows/release.yml/badge.svg)](https://github.com/antyung88/docker-shadowsocks/actions/workflows/release.yml)
 Shadowsocks in Docker
 
 Shadowsocks is a free and open-source encryption protocol project, widely used in mainland China to circumvent Internet censorship. It was created in 2012 by a Chinese programmer named “clowwindy”, and multiple implementations of the protocol have been made available since.
