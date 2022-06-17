@@ -2,7 +2,7 @@ version: "3.3"
 services:
   shadowsocks_test:
     container_name: shadowsocks_test
-    image: ghcr.io/antyung88/shadowsocks:main
+    image: ghcr.io/antyung88/shadowsocks:test
     restart: always
     ports:
       - 8388:8388/tcp
