@@ -55,4 +55,4 @@ jobs:
       - name: Should exit with code 1
         run: |
           sleep 5
-          docker logs shadowsocks_test 2>&1 | grep "listening"
+          docker logs shadowsocks_test 2>&1 | grep "error"
